@@ -15,7 +15,7 @@ def get_hello():
 
 
 # Rota POST: Adiciona um novo recurso (opcional para demonstrar REST)
-@app.route("/api/v1/hello", methods=["POST"])
+@app.route("/items", methods=["POST"])
 def create_hello():
     data = request.get_json()
     if not data or "mensagem" not in data:
