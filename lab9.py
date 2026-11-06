@@ -1,15 +1,34 @@
-from flask import Flask
+from flask import Flask, jsonify, request
 
-# Inicializa a aplicação Flask
 app = Flask(__name__)
 
+# Banco de dados temporário em memória (exemplo de recurso)
+mensagens = [
+    {"id": 1, "mensagem": "Hello, World!", "origem": "Flask RESTful API"}
+]
 
-# Define a rota principal ("/")
-@app.route("/")
-def hello_world():
-  return "<h1>Hello, World!</h1><p>Minha primeira aplicação Flask no PyCharm!</p>"
+
+# Rota GET: Retorna a lista de recursos em formato JSON
+@app.route("/api/v1/hello", methods=["GET"])
+def get_hello():
+    return jsonify({"status": "success", "data": mensagens}), 200
 
 
-# Executa o servidor de desenvolvimento
+# Rota POST: Adiciona um novo recurso (opcional para demonstrar REST)
+@app.route("/api/v1/hello", methods=["POST"])
+def create_hello():
+    data = request.get_json()
+    if not data or "mensagem" not in data:
+        return jsonify({"status": "error", "message": "Campo 'mensagem' é obrigatório"}), 400
+
+    nova_mensagem = {
+        "id": len(mensagens) + 1,
+        "mensagem": data["mensagem"],
+        "origem": data.get("origem", "Usuário")
+    }
+    mensagens.append(nova_mensagem)
+    return jsonify({"status": "success", "data": nova_mensagem}), 201
+
+
 if __name__ == "__main__":
-  app.run(debug=True)
+    app.run(debug=True)
